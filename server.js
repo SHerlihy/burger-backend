@@ -63,4 +63,29 @@ app.patch("/stock/:name", (req, res) => {
   );
 });
 
+// private routes for company only
+
+app.route("/stock/:name").delete((req, res) => {
+  Ingredient.deleteOne({ name: req.params.name }, (err) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send("removed from database");
+    }
+  });
+});
+
+app.route("/stock").post((req, res) => {
+  const newIngredient = new Ingredient({
+    name: req.body.name,
+    price: req.body.price,
+    stock: req.body.stock,
+  });
+  newIngredient.save((err) => {
+    if (err) return res.send(err);
+    res.send("New article added");
+  });
+});
+// delete not included, wouldn't want whole db to be deleted by a client plus route is too close to the delete one route
+
 app.listen(4500, () => console.log("listening on 4500"));
