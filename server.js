@@ -42,8 +42,23 @@ app.get("/", (req, res) => {
   });
 });
 
+app.patch("/ingredientUsed/:name", (req, res) => {
+  Ingredient.updateOne(
+    { name: req.params.name },
+    { $inc: { stock: req.body.used } },
+    (err) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(req.body);
+      }
+    }
+  );
+});
+
+// private routes for company only
+
 app.patch("/stock/:name", (req, res) => {
-  console.log(req.body.used);
   Ingredient.updateOne(
     { name: req.params.name },
     { $set: { stock: req.body.used } },
@@ -56,8 +71,6 @@ app.patch("/stock/:name", (req, res) => {
     }
   );
 });
-
-// private routes for company only
 
 app.route("/stock/:name").delete((req, res) => {
   Ingredient.deleteOne({ name: req.params.name }, (err) => {
